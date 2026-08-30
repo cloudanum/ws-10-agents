@@ -1,0 +1,28 @@
+# requirements.txt — Agent 10: The Embodied Intelligence Agent
+# Author: Imran Ahmad
+# Ref: Chapter 16 — Embodied and Physical World Agents, §Technical requirements (p. 458)
+#
+# Book specifies: langchain==0.2.16, langchain-openai==0.1.23,
+#   langgraph==0.1.4, openai==1.40.0, pydantic==2.8.2, python-dotenv==1.0.1
+# See TROUBLESHOOTING.md in the book repository (chapter16) for version
+# conflict resolutions.
+
+langchain==0.2.16
+langchain-core>=0.2.38,<0.3.0        # Peer dep of langchain==0.2.16
+langgraph==0.1.4
+pydantic==2.8.2
+python-dotenv==1.0.1
+
+# Live Mode providers (optional — only needed with a real API key;
+# Simulation Mode runs without any of these):
+# langchain-openai==0.1.23             # OpenAI (gpt-4o)
+# langchain-anthropic                  # Anthropic (Claude)
+# langchain-google-genai               # Google (Gemini)
+
+# Notebook runtime
+jupyter>=1.0.0
+ipykernel>=6.29.0
+
+# Standard library (no install needed, listed for documentation):
+# json, os, sys, math, getpass, functools, typing, dataclasses,
+# collections, datetime

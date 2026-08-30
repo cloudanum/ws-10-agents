@@ -1,0 +1,20 @@
+# Chapter 13: Healthcare and Scientific Agents — Healthcare Intelligence Agent
+# Book: 30 Agents Every AI Engineer Must Build
+# Author: Imran Ahmad
+#
+# Install: pip install -r requirements.txt
+# Requires: Python 3.10+
+
+# Core
+numpy>=1.24,<2.1
+python-dotenv>=1.0,<2.0
+
+# Async event-loop nesting (used by Section 0 setup cell)
+nest-asyncio>=1.6,<2.0
+
+# NLP / embeddings (optional — used in live mode only)
+# transformers>=4.40,<5.0
+
+# Jupyter
+jupyter>=1.0
+ipykernel>=6.0

@@ -1,0 +1,18 @@
+# =============================================================================
+# Workshop Agent 1: The Tool-Using Agent
+# From Chapter 7: Tool Manipulation and Orchestration Agents
+# Book: "30 Agents Every AI Engineer Must Build" by Imran Ahmad (Packt, 2026)
+# Python >= 3.11 required
+# =============================================================================
+
+# Core — required for Simulation Mode and all notebook sections
+pandas>=2.2,<3.0
+matplotlib>=3.9,<4.0
+python-dotenv>=1.1,<2.0
+ipykernel>=6.29,<7.0
+notebook>=7.2,<8.0
+
+# Optional — Live Mode only (uncomment to enable real API calls):
+# openai>=1.40.0,<2.0.0          # OpenAI provider
+# anthropic>=0.42.0              # Anthropic Claude provider
+# google-generativeai>=0.8.0     # Google Gemini provider

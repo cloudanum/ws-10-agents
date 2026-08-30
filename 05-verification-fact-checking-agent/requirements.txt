@@ -1,0 +1,19 @@
+# Workshop Agent 5 — Verification / Fact-Checking Agent
+# Book: "Agents" by Imran Ahmad (Packt, 2026) — Chapter 8, §8.2 & §8.4
+#
+# Install: pip install -r requirements.txt
+# Note: torch and transformers are optional (for Section 8.2.5 NLI demo).
+#        The notebook runs fully without them in Simulation Mode.
+
+# ── Core (required) ──────────────────────────────────
+python-dotenv>=1.1.0
+
+# ── Optional: NLI Demo (Section 8.2.5) ──────────────
+# Uncomment these if you want to run the BART-MNLI model locally.
+# Requires ~1.6 GB download on first run.
+# transformers>=4.44.0,<5.0.0
+# torch>=2.4.0,<3.0.0
+
+# ── Jupyter ──────────────────────────────────────────
+notebook>=7.2.0
+ipykernel>=6.29.0
