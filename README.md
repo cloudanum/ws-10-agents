@@ -60,6 +60,19 @@ pip install -r requirements.txt
 jupyter notebook 01_tool_using_agent.ipynb
 ```
 
+### Before the workshop (attendees)
+
+Run the pre-flight check at the repo root — it verifies Python, pip, venv,
+network, and key detection in under a minute:
+
+```bash
+python3 check_setup.py          # add --full for a throwaway install test
+```
+
+Full setup steps, FAQ, and zero-install fallbacks (Colab / Codespaces) are in
+[PRE_CLASS_SETUP.md](PRE_CLASS_SETUP.md). Instructor email copy:
+[PRE_CLASS_EMAIL.md](PRE_CLASS_EMAIL.md).
+
 ### Simulation Mode vs. Live Mode
 
 Every notebook **defaults to Simulation Mode**: all LLM calls are served by a chapter-derived
@@ -91,6 +104,10 @@ Multi-provider routing is handled by `supporting/llm_provider.py`, shared by all
 ├── 09-vision-language-agent/            # Ch. 11 — vision question answering
 ├── 10-embodied-intelligence-agent/      # Ch. 16 — drone mission planner (Ottawa winter)
 ├── supporting/llm_provider.py           # shared multi-provider LLM detection
+├── check_setup.py                       # attendee pre-flight check (--full for install test)
+├── PRE_CLASS_SETUP.md                   # attendee setup guide + FAQ + Colab/Codespaces fallbacks
+├── PRE_CLASS_EMAIL.md                   # instructor email copy (T-5 days / T-1 day / day-of)
+├── .devcontainer/                       # one-click GitHub Codespaces environment (Python 3.12)
 ├── .env.template                        # optional API keys for Live Mode
 └── LICENSE                              # MIT
 ```
@@ -109,6 +126,7 @@ modules and data it needs, a trimmed `requirements.txt`, and a short README.
 - **5-hour cut:** reduce Act IV to one agent (keep the Vision-Language Agent) or make the drone agent a recorded bonus.
 - **6-hour version:** full 10 agents as outlined above.
 - **Setup risk is low:** Simulation Mode means attendees without API keys can still follow every build.
+- **Remote cohorts:** send `PRE_CLASS_EMAIL.md` copy 5 days out; attendees self-certify with `check_setup.py` and follow `PRE_CLASS_SETUP.md` (Colab and Codespaces fallbacks for locked-down laptops). Per-agent venvs are required — the agents' pinned dependencies conflict by design.
 - Heavy optional dependencies (e.g. torch/transformers for live vision and NLI demos) are commented out in each `requirements.txt`; notebooks skip those demos gracefully without them.
 
 ## License

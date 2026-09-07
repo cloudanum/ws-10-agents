@@ -1,0 +1,13 @@
+{
+  "name": "10-agents-workshop",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "postCreateCommand": "pip install --disable-pip-version-check -r 01-tool-using-agent/requirements.txt && pip install --disable-pip-version-check -r 02-knowledge-retrieval-rag-agent/requirements.txt",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter"
+      ]
+    }
+  }
+}
