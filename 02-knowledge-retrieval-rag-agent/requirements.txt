@@ -10,14 +10,15 @@ numpy>=1.26.0,<2.1
 pandas>=2.2.0
 
 # §6.1 — Knowledge Retrieval Agent (RAG pipeline)
-langchain>=0.3.0
+langchain>=0.3.0,<1.0.0
 langchain-community>=0.3.0
 langchain-text-splitters>=0.3.0
 faiss-cpu>=1.9.0
 
-# Live Mode (optional) — uncomment for real API calls, see requirements-openai.txt in the book repo
-# openai>=1.40.0,<2.0.0
-# langchain-openai>=0.3.0
+# Live Mode — OpenAI provider (used automatically when OPENAI_API_KEY is set
+# in .env; without a key the notebook runs in Simulation Mode and never imports these)
+openai>=1.40.0,<2.0.0
+langchain-openai>=0.3.0
 
 # Notebook
 jupyter>=1.0.0

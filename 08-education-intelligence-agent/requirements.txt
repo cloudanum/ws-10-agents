@@ -12,6 +12,10 @@ numpy==1.26.4
 networkx==3.3
 python-dotenv==1.0.1
 
+# === Live Mode — OpenAI provider (used automatically when OPENAI_API_KEY is
+# set in .env; without a key the notebook runs in Simulation Mode and never imports it) ===
+openai>=1.40.0,<2.0.0
+
 # === Jupyter Runtime ===
 jupyter>=1.0.0
 ipykernel>=6.29.0

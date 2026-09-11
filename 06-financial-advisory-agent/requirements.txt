@@ -21,6 +21,10 @@ tavily-python==0.3.3
 numpy==1.26.4
 pydantic==2.8.2
 
+# --- Live Mode providers (used automatically when OPENAI_API_KEY is set in
+# .env; without a key the notebook runs in Simulation Mode and never imports these) ---
+langchain-openai==0.1.23
+
 # --- Environment & Security ---
 python-dotenv==1.0.1
 
