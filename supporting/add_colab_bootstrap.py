@@ -35,16 +35,28 @@ if "google.colab" in sys.modules:
     if not os.path.exists("/content/repo"):
         os.system("git clone --depth 1 {repo_url} /content/repo")
     os.chdir(f"/content/repo/{{AGENT_DIR}}")
-    # Keep Colab's preinstalled numpy/pandas: the kernel already has them loaded,
-    # so a pip downgrade (e.g. to numpy 1.26.4) breaks pandas with an ABI error.
+    # Keep Colab's preinstalled scientific/kernel stack: the kernel already has
+    # numpy, pandas, pydantic and ipykernel loaded, so letting pip replace them
+    # (e.g. building numpy 1.26.4 from source or upgrading ipykernel) breaks the
+    # running kernel with ABI errors or an OOM kill. Filter those lines out of
+    # requirements and constrain the rest of the install to the installed versions.
     import re
+    from importlib.metadata import PackageNotFoundError, version
     filtered = [
         line for line in open("requirements.txt")
-        if not re.match(r"\\s*(numpy|pandas)\\b", line, re.IGNORECASE)
+        if not re.match(r"\\s*(numpy|pandas|pydantic|jupyter|ipykernel)\\b", line, re.IGNORECASE)
     ]
     with open("/tmp/colab_requirements.txt", "w") as fh:
         fh.writelines(filtered)
-    %pip install -q -r /tmp/colab_requirements.txt
+    pins = []
+    for pkg in ("numpy", "pandas", "pydantic", "ipykernel"):
+        try:
+            pins.append(f"{{pkg}}=={{version(pkg)}}")
+        except PackageNotFoundError:
+            pass
+    with open("/tmp/colab_constraints.txt", "w") as fh:
+        fh.write("\\n".join(pins) + "\\n")
+    %pip install -q -r /tmp/colab_requirements.txt --constraint /tmp/colab_constraints.txt
     print(f"Colab setup complete — working directory: {{os.getcwd()}}")
 else:
     print("Not on Colab — skipping bootstrap (local setup already in place).")'''
