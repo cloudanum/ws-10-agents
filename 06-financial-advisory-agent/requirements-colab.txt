@@ -1,0 +1,18 @@
+# requirements-colab.txt — Agent 06: The Financial Advisory Agent
+# Used by the Colab bootstrap INSTEAD of requirements.txt when running on
+# Google Colab. LangChain/LangGraph are NOT installed here: langchain==0.2.16
+# requires numpy<2 on Python >=3.12, which cannot coexist with Colab's
+# preinstalled numpy 2.x (building numpy 1.26.4 from source OOM-kills the
+# kernel, and downgrading breaks Colab's numpy-2-compiled pandas/scipy).
+# Colab's preinstalled langchain 1.x / langgraph 1.x are used instead — see
+# make_react_agent() in the notebook for the state_modifier -> prompt shim.
+
+# --- Financial Data ---
+yfinance==0.2.41
+finnhub-python==2.4.19
+
+# --- Search ---
+tavily-python==0.3.3
+
+# --- Environment & Security ---
+python-dotenv==1.0.1

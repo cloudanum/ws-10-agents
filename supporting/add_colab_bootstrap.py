@@ -35,6 +35,10 @@ if "google.colab" in sys.modules:
     if not os.path.exists("/content/repo"):
         os.system("git clone --depth 1 {repo_url} /content/repo")
     os.chdir(f"/content/repo/{{AGENT_DIR}}")
+    # On Colab, prefer requirements-colab.txt when present: it drops pins that
+    # cannot coexist with Colab's preinstalled stack (e.g. langchain 0.2.16
+    # requires numpy<2 on Python 3.13, while Colab ships numpy 2.x).
+    req_file = "requirements-colab.txt" if os.path.exists("requirements-colab.txt") else "requirements.txt"
     # Keep Colab's preinstalled scientific/kernel stack: the kernel already has
     # numpy, pandas, pydantic and ipykernel loaded, so letting pip replace them
     # (e.g. building numpy 1.26.4 from source or upgrading ipykernel) breaks the
@@ -43,7 +47,7 @@ if "google.colab" in sys.modules:
     import re
     from importlib.metadata import PackageNotFoundError, version
     filtered = [
-        line for line in open("requirements.txt")
+        line for line in open(req_file)
         if not re.match(r"\\s*(numpy|pandas|pydantic|jupyter|ipykernel)\\b", line, re.IGNORECASE)
     ]
     with open("/tmp/colab_requirements.txt", "w") as fh:
@@ -71,7 +75,7 @@ if "google.colab" in sys.modules:
              "--constraint", "/tmp/colab_constraints.txt"],
         )
         raise RuntimeError("Colab bootstrap: pip install failed (see resolver report above)")
-    print(f"Colab setup complete — working directory: {{os.getcwd()}}")
+    print(f"Colab setup complete ({{req_file}}) — working directory: {{os.getcwd()}}")
 else:
     print("Not on Colab — skipping bootstrap (local setup already in place).")'''
 

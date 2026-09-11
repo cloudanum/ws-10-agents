@@ -1,0 +1,10 @@
+# requirements-colab.txt — Agent 10: The Embodied Intelligence Agent
+# Used by the Colab bootstrap INSTEAD of requirements.txt when running on
+# Google Colab. langchain==0.2.16 / langgraph==0.1.4 are NOT installed here:
+# langchain 0.2.x requires numpy<2 on Python >=3.12, which cannot coexist with
+# Colab's preinstalled numpy 2.x (building numpy 1.26.4 from source OOM-kills
+# the kernel). Colab's preinstalled langchain 1.x / langgraph 1.x are used
+# instead; the notebook's Simulation Mode code is compatible with both.
+
+# --- Environment & Security ---
+python-dotenv==1.0.1
