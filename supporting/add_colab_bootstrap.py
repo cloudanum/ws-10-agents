@@ -35,7 +35,16 @@ if "google.colab" in sys.modules:
     if not os.path.exists("/content/repo"):
         os.system("git clone --depth 1 {repo_url} /content/repo")
     os.chdir(f"/content/repo/{{AGENT_DIR}}")
-    %pip install -q -r requirements.txt
+    # Keep Colab's preinstalled numpy/pandas: the kernel already has them loaded,
+    # so a pip downgrade (e.g. to numpy 1.26.4) breaks pandas with an ABI error.
+    import re
+    filtered = [
+        line for line in open("requirements.txt")
+        if not re.match(r"\\s*(numpy|pandas)\\b", line, re.IGNORECASE)
+    ]
+    with open("/tmp/colab_requirements.txt", "w") as fh:
+        fh.writelines(filtered)
+    %pip install -q -r /tmp/colab_requirements.txt
     print(f"Colab setup complete — working directory: {{os.getcwd()}}")
 else:
     print("Not on Colab — skipping bootstrap (local setup already in place).")'''
@@ -65,17 +74,23 @@ def main():
         if not cells:
             print(f"SKIP {path}: no cells")
             continue
-        if any(c.get("id") == "colab-bootstrap" for c in cells):
-            print(f"SKIP {path}: bootstrap already present")
-            continue
-        if cells[0].get("cell_type") != "markdown":
-            print(f"SKIP {path}: first cell is {cells[0].get('cell_type')}, expected markdown")
-            continue
-        cells.insert(1, make_cell(agent_dir))
-        with open(path, "w") as fh:
-            json.dump(nb, fh, indent=1, ensure_ascii=False)
-            fh.write("\n")
-        changed.append(path)
+        for i, c in enumerate(cells):
+            if c.get("id") == "colab-bootstrap":
+                cells[i] = make_cell(agent_dir)
+                with open(path, "w") as fh:
+                    json.dump(nb, fh, indent=1, ensure_ascii=False)
+                    fh.write("\n")
+                changed.append(path + " (replaced)")
+                break
+        else:
+            if cells[0].get("cell_type") != "markdown":
+                print(f"SKIP {path}: first cell is {cells[0].get('cell_type')}, expected markdown")
+                continue
+            cells.insert(1, make_cell(agent_dir))
+            with open(path, "w") as fh:
+                json.dump(nb, fh, indent=1, ensure_ascii=False)
+                fh.write("\n")
+            changed.append(path)
     print(f"\nUpdated {len(changed)} notebooks")
     for p in changed:
         print(" -", p)
