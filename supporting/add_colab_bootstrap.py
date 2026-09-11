@@ -2,8 +2,9 @@
 """Insert a Google Colab bootstrap cell into every workshop notebook.
 
 The cell is a no-op outside Colab (prints a one-liner and continues).
-On Colab it clones the repo, cd's into the agent folder, and installs
-that agent's requirements — making the student flow "open notebook -> Run all".
+On Colab it clones the repo, cd's into the agent folder, installs
+that agent's requirements, and loads any API keys from Colab Secrets
+into env vars — making the student flow "open notebook -> Run all".
 """
 
 import json
@@ -75,6 +76,23 @@ if "google.colab" in sys.modules:
              "--constraint", "/tmp/colab_constraints.txt"],
         )
         raise RuntimeError("Colab bootstrap: pip install failed (see resolver report above)")
+    # Load API keys from Colab Secrets (key icon, left sidebar) into env vars, so
+    # detect_provider() / os.getenv() find them exactly like a local .env file.
+    # Missing secrets are skipped silently — the notebook then runs in Simulation Mode.
+    try:
+        from google.colab import userdata
+        for _secret in ("OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GOOGLE_API_KEY",
+                        "FINNHUB_API_KEY", "TAVILY_API_KEY"):
+            if not os.environ.get(_secret):
+                try:
+                    _value = userdata.get(_secret)
+                except Exception:
+                    _value = None
+                if _value:
+                    os.environ[_secret] = _value
+                    print(f"Loaded {{_secret}} from Colab Secrets.")
+    except Exception:
+        pass
     print(f"Colab setup complete ({{req_file}}) — working directory: {{os.getcwd()}}")
 else:
     print("Not on Colab — skipping bootstrap (local setup already in place).")'''

@@ -133,7 +133,8 @@ prefer the browser. Works on any machine with Chrome/Edge/Firefox.
 
 4. Run the notebook as usual — Simulation Mode works out of the box.
 5. For Live Mode, use Colab's **Secrets** panel (key icon, left sidebar) to add
-   `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` instead of a `.env` file.
+   `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` instead of a `.env` file. The
+   bootstrap cell loads them automatically — no extra code needed.
 6. Repeat steps 2–3 per agent folder. Colab resets when idle, so reinstall is
    one cell per session.
 
