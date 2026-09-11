@@ -56,7 +56,21 @@ if "google.colab" in sys.modules:
             pass
     with open("/tmp/colab_constraints.txt", "w") as fh:
         fh.write("\\n".join(pins) + "\\n")
-    %pip install -q -r /tmp/colab_requirements.txt --constraint /tmp/colab_constraints.txt
+    import subprocess
+    res = subprocess.run(
+        [sys.executable, "-m", "pip", "install", "-q",
+         "-r", "/tmp/colab_requirements.txt",
+         "--constraint", "/tmp/colab_constraints.txt"],
+        capture_output=True, text=True,
+    )
+    if res.returncode != 0:
+        print("pip install failed — re-running without -q for the full resolver report:\\n")
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install",
+             "-r", "/tmp/colab_requirements.txt",
+             "--constraint", "/tmp/colab_constraints.txt"],
+        )
+        raise RuntimeError("Colab bootstrap: pip install failed (see resolver report above)")
     print(f"Colab setup complete — working directory: {{os.getcwd()}}")
 else:
     print("Not on Colab — skipping bootstrap (local setup already in place).")'''
