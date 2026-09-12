@@ -98,18 +98,48 @@ else:
     print("Not on Colab — skipping bootstrap (local setup already in place).")'''
 
 
-def make_cell(agent_dir):
-    src = CELL_TEMPLATE.format(agent_dir=agent_dir, repo_url=REPO_URL)
+def make_cell(cell_id, src):
     lines = [line + "\n" for line in src.split("\n")]
     lines[-1] = lines[-1].rstrip("\n")
     return {
         "cell_type": "code",
         "execution_count": None,
-        "id": "colab-bootstrap",
+        "id": cell_id,
         "metadata": {},
         "outputs": [],
         "source": lines,
     }
+
+
+def bootstrap_cell(agent_dir):
+    return make_cell("colab-bootstrap", CELL_TEMPLATE.format(agent_dir=agent_dir, repo_url=REPO_URL))
+
+
+LIVE_KEY_TEMPLATE = '''# ── Optional: Live Mode ─────────────────────────────────────────────
+# Replace sk-proj-CLASS-KEY-HERE with the class key from chat, then run this
+# cell (before the LLM setup cell). Leave it as-is to stay in Simulation Mode.
+# A key from Colab Secrets or a local .env always takes precedence over this cell.
+import os
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+if not os.environ.get("OPENAI_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = "sk-proj-CLASS-KEY-HERE"'''
+
+
+def live_key_cell():
+    return make_cell("live-key", LIVE_KEY_TEMPLATE)
+
+
+def upsert(cells, cell):
+    """Replace the cell with the same id, or return None if absent."""
+    for i, c in enumerate(cells):
+        if c.get("id") == cell["id"]:
+            cells[i] = cell
+            return i
+    return None
 
 
 def main():
@@ -122,23 +152,20 @@ def main():
         if not cells:
             print(f"SKIP {path}: no cells")
             continue
-        for i, c in enumerate(cells):
-            if c.get("id") == "colab-bootstrap":
-                cells[i] = make_cell(agent_dir)
-                with open(path, "w") as fh:
-                    json.dump(nb, fh, indent=1, ensure_ascii=False)
-                    fh.write("\n")
-                changed.append(path + " (replaced)")
-                break
-        else:
+        boot = bootstrap_cell(agent_dir)
+        if upsert(cells, boot) is None:
             if cells[0].get("cell_type") != "markdown":
                 print(f"SKIP {path}: first cell is {cells[0].get('cell_type')}, expected markdown")
                 continue
-            cells.insert(1, make_cell(agent_dir))
-            with open(path, "w") as fh:
-                json.dump(nb, fh, indent=1, ensure_ascii=False)
-                fh.write("\n")
-            changed.append(path)
+            cells.insert(1, boot)
+        live = live_key_cell()
+        if upsert(cells, live) is None:
+            boot_idx = next(i for i, c in enumerate(cells) if c.get("id") == "colab-bootstrap")
+            cells.insert(boot_idx + 1, live)
+        with open(path, "w") as fh:
+            json.dump(nb, fh, indent=1, ensure_ascii=False)
+            fh.write("\n")
+        changed.append(path)
     print(f"\nUpdated {len(changed)} notebooks")
     for p in changed:
         print(" -", p)

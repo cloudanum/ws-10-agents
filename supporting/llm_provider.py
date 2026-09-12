@@ -129,7 +129,7 @@ def _get_valid_key(env_var):
     key = os.getenv(env_var, "").strip()
     if not key:
         return None
-    if any(p in key.lower() for p in ["your-key", "your_key", "xxx", "placeholder"]):
+    if any(p in key.lower() for p in ["your-key", "your_key", "xxx", "placeholder", "class-key", "class_key"]):
         return None
     return key
 
